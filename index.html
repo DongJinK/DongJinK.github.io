@@ -65,6 +65,13 @@
 .sunday{
   color: red;
 }
+.me{
+  padding-top:10;
+  font-style:italic;
+  border-top : solid 1px green;
+  border-bottom : solid 1px green;
+  font-size:12px;
+}
 </style>
 <div id="calendar">
     <h2></h2>
@@ -124,7 +131,7 @@ function calendarBuilding(firstDate, lastDate) {
       }
       weekday_no++;
     }
-
+    days.innerHTML += "<div class='me'>made by dongjin</div>"
     if (count !=0){
       document.getElementById("goto").style.display="block";
     } else{
