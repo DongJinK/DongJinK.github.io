@@ -1,42 +1,159 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>HTML/CSS연습</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
-    <style>
-    div {
-      font-size : 20pt;
-      margin : 20px;
-      padding-left : 30px;
-      border-left : 1px solid green;
-      border-left-width : 10px;
-      line-height : 2;
-      font-family: 'Nanum Gothic', 돋움; /* 웹 폰트 지정 */
+<style>
+#calendar {
+    width: 500px;
+    height: 400px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.week {
+    display: flex;
+}
+
+.weekname {
+    width: 50px;
+    font-weight:bold;
+    color: brown;
+    background-color:aqua;
+    padding:10px;
+}
+
+.days {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.daynum {
+    width: 70px;
+    line-height: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.daynum .empty {
+    pointer-events: none;
+}
+.thisMon{
+  font-size:40pt;
+}
+.today {
+  background-color: yellow;
+  font-weight:bold;
+}
+
+.daynum:hover {
+    background: gray;
+    color: white;
+}
+
+#goto{
+  position: absoulte;
+  left:300px
+  top: 80px
+}
+.prev-btn{
+  position: absolute;
+  top:20;
+  left:30px;
+}
+
+.next-btn{
+  position: absolute;
+  top:20;
+  left:440px;
+}
+.sunday{
+  color: red;
+}
+</style>
+<div id="calendar">
+    <h2></h2>
+    <div class="week"></div>
+    <div class="days"></div>
+    <button id="goto" onClick="today_init()"style="display:none">이번 달로>>></button>
+</div>
+<button class="prev-btn"onclick="handlePrevCalendar()">이전</button>
+<button class="next-btn"onclick="handleNextCalendar()">다음</button>
+<script>
+const calendar = document.getElementById("calendar");
+const week = document.querySelector(".week");
+const days = document.querySelector(".days");
+
+let today = new Date();
+let count = 0;
+
+const firstDay = (count) =>
+    new Date(today.getFullYear(), today.getMonth() + count, 1);
+const lastDay = (count) =>
+    new Date(today.getFullYear(), today.getMonth() + count + 1, 0);
+const weekName = ["일(日)", "월(月)", "화(火)", "수(水)", "목(木)", "금(金)", "토(土)"];
+
+week.innerHTML = weekName
+    .map((week) => `<div class="weekname"> ${week} </div>`)
+    .join("");
+1;
+
+function calendarBuilding(firstDate, lastDate) {
+    const calendarHeader = calendar.querySelector("h2");
+
+    calendarHeader.innerText = `${lastDate.getFullYear()}년 ${
+        lastDate.getMonth() + 1
+    }월`;
+
+    days.innerHTML = "";
+    let weekday_no = 0;
+    for (let i = 0; i < firstDate; i++) {
+        days.innerHTML += `<div class="daynum empty"></div>`;
+        weekday_no++;
     }
-    .link{
-      border-left-width:0px;
-      margin-bottom : 2px dashed blue;
-      font-size: 16pt;
-      padding-left : 10px;
+
+    for (let i = 1; i < lastDate.getDate() + 1; i++) {
+        if ((weekday_no%7) == 0){
+          if(i == today.getDate() && count==0){
+          days.innerHTML += `<div class="daynum today sunday"> ${i} </div>`;
+          } else{
+          days.innerHTML += `<div class="daynum sunday"> ${i} </div>`;
+          }
+        }
+      else{
+        if (i == today.getDate() && count==0){
+        days.innerHTML += `<div class="daynum today"> ${i} </div>`;
+        } else{
+          days.innerHTML += `<div class="daynum"> ${i} </div>`;
+        }
+      }
+      weekday_no++;
     }
-    a{
-      font-size : 20pt;
-      text-decoration : none; 
-      color : #689900;
+
+    if (count !=0){
+      document.getElementById("goto").style.display="block";
+    } else{
+      document.getElementById("goto").style.display="none";
     }
-    a:hover {
-      color: hotpink;
-      font-weight : bold;
-      font-style : italic;
-    }
-    list{
-      list-style-image : square;
-    }
-    </style>
-   </head>
-   <body>
-      <a href="https://sites.google.com/view/sdhs">구글사이트로</a>
-   </body>
-</html>
+}
+
+function handleNextCalendar() {
+    count += 1;
+    const firstDate = firstDay(count).getDay();
+    const lastDate = lastDay(count);
+    calendarBuilding(firstDate, lastDate);
+}
+
+function handlePrevCalendar() {
+    count -= 1;
+    const firstDate = firstDay(count).getDay();
+    const lastDate = lastDay(count);
+    calendarBuilding(firstDate, lastDate);
+}
+
+function init() {
+    const firstDate = firstDay(0).getDay();
+    const lastDate = lastDay(0);
+    calendarBuilding(firstDate, lastDate);
+}
+function today_init(){
+  count = 0;
+  init();
+}
+init();
+</script>
